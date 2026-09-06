@@ -359,6 +359,11 @@
   .svc p{margin-top:8px;font-size:14px;color:var(--txt2);position:relative;max-width:38ch}
   .svc .more{margin-top:14px;font-size:12.5px;color:var(--azur);display:inline-flex;align-items:center;gap:6px;opacity:0;transform:translateY(4px);transition:.25s;position:relative}
   .svc:hover .more{opacity:1;transform:none}
+  .svc.tall .more,.svc.wide .more{opacity:1;transform:none}
+  .svc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative;z-index:1}
+  .svc.wide .svc-tags{justify-content:center}
+  .svc-tag{font-size:12px;font-weight:600;color:var(--read);border:1px solid var(--line-2);background:var(--glass);border-radius:999px;padding:5px 11px}
+  @media(hover:none){.svc .more{opacity:1;transform:none}}
   .svc.tall{grid-row:span 2}
   .svc.tall h3{font-size:25px}
   .svc.wide{grid-column:1 / -1;align-items:center;justify-content:center;text-align:center}
@@ -437,10 +442,18 @@
   .score .stars .sf{position:absolute;left:0;top:0;color:#ffd166;overflow:hidden;white-space:nowrap;pointer-events:none}
   .score .lab{margin-top:12px;font-size:14px;color:var(--txt2)}
   .score .avatars{display:flex;margin-top:24px}
-  .score .avatars span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'Inter Tight';font-weight:700;font-size:13px;color:#04121b;border:2px solid #0a0e1a;margin-left:-10px;background:linear-gradient(135deg,#8ff5cf,#3ee9a4)}
+  .score .avatars span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:'Inter Tight';font-weight:700;font-size:13px;color:#04121b;border:2px solid #0a0e1a;margin-left:-10px;background:linear-gradient(135deg,#5b7cff,#2b45ff)}
   .score .avatars span:first-child{margin-left:0}
   .score .avatars .more{background:linear-gradient(135deg,#9ab4ff,#2b45ff);color:#fff}
-  .score .rec{margin-top:16px;font-size:13.5px;color:var(--peri);font-weight:600}
+  .score .sc-div{height:1px;background:var(--line);margin:22px 0 18px}
+  .score .ministats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .score .ms{border:1px solid var(--line);border-radius:12px;padding:12px 8px;background:var(--glass);text-align:center}
+  .score .ms .n{font-family:'Inter Tight';font-weight:800;font-size:19px;letter-spacing:-.02em;line-height:1}
+  .score .ms .n.g{color:var(--pos)}
+  .score .ms .t{font-size:11px;color:var(--txt2);margin-top:5px;line-height:1.3}
+  .score .sc-join{margin-top:20px;display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:14px;color:var(--peri);text-decoration:none;align-self:flex-start;transition:color .2s}
+  .score .sc-join:hover{color:#fff}
+  .score .sc-join svg{width:15px;height:15px}
   .alist{display:flex;flex-direction:column;gap:14px}
   .arev{border:1px solid var(--line);border-radius:18px;background:var(--glass);padding:22px 24px;display:flex;gap:16px;align-items:flex-start;transition:border-color .25s,transform .25s}
   .arev:hover{border-color:rgba(109,134,255,.4);transform:translateY(-2px)}
@@ -1748,7 +1761,13 @@
           <div class="stars" role="img" aria-label="Note moyenne : 4,7 sur 5"><span class="sf" style="width:94%">★★★★★</span>★★★★★</div>
           <div class="lab">Note moyenne de nos clients</div>
           <div class="avatars"><span>SL</span><span>KM</span><span>EP</span><span class="more">+</span></div>
-          <div class="rec">150 clients · 88 % nous recommandent</div>
+          <div class="sc-div"></div>
+          <div class="ministats">
+            <div class="ms"><div class="n">150</div><div class="t">clients accompagnés</div></div>
+            <div class="ms"><div class="n g">88 %</div><div class="t">nous recommandent</div></div>
+            <div class="ms"><div class="n">&lt; 24 h</div><div class="t">délai de réponse</div></div>
+          </div>
+          <a href="#rdv" class="sc-join" onclick="T('cta_click',{cta:'avis'})">Rejoindre nos clients <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
         <div class="alist" id="avis-list"></div>
       </div>
@@ -2402,7 +2421,7 @@ var IC={
   scale:'<path d="M12 3v18M7 21h10M5 7h14M5 7l-2.5 5.5a3 3 0 006 0zM19 7l-2.5 5.5a3 3 0 006 0z"/>'
 };
 var SERVICES=[
-  {icon:IC.bars,page:'comptabilite',title:'Expertise comptable',teaser:'Tenue, bilan, comptes annuels et liasses fiscales, en toute sérénité.',
+  {icon:IC.bars,page:'comptabilite',title:'Expertise comptable',teaser:'Tenue, bilan, comptes annuels et liasses fiscales, en toute sérénité.',tags:['Tenue','Bilan','Liasses fiscales','TVA'],
     desc:'Une comptabilité tenue avec rigueur, des comptes clairs et conformes, pour piloter votre activité en toute sérénité.',
     features:['Traitement des factures clients et fournisseurs','Récupération et exploitation de votre FEC (Fichier des Écritures Comptables)','Saisie et tenue complète de votre comptabilité','Établissement du bilan et du compte de résultat','Comptes annuels et liasses fiscales','Révision et arrêté des comptes','Tableaux de bord et reporting réguliers']},
   {icon:IC.case,page:'conseil-gestion',title:'Conseil & gestion',teaser:'Tableaux de bord, prévisionnels et pilotage stratégique de votre activité.',
@@ -2417,7 +2436,7 @@ var SERVICES=[
   {icon:IC.rocket,page:'creation',title:'Création d’entreprise',teaser:'Statut, formalités et démarrage de votre activité, accompagnés de A à Z.',
     desc:'De l’idée à l’immatriculation, on vous accompagne pour lancer votre activité sur des bases solides.',
     features:['Choix du statut juridique adapté','Rédaction des statuts','Formalités et immatriculation','Business plan et prévisionnel','Ouverture des comptes et démarches','Accompagnement au démarrage']},
-  {icon:IC.users,title:'Accompagnement personnalisé',teaser:'Un interlocuteur dédié, à votre écoute au quotidien.',
+  {icon:IC.users,title:'Accompagnement personnalisé',teaser:'Un interlocuteur dédié, à votre écoute au quotidien.',tags:['Interlocuteur dédié','Réponse 24 h','Sur-mesure'],
     desc:'Un interlocuteur dédié, disponible et à votre écoute, pour répondre à toutes vos questions au quotidien.',
     features:['Un interlocuteur unique et dédié','Réponses sous 24 h','Rendez-vous à distance ou en présentiel','Outils digitaux modernes et sécurisés','Conseils clairs, sans jargon','Suivi sur-mesure selon vos besoins']}
 ];
@@ -2576,12 +2595,13 @@ var CHK='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="cur
     var act=s.page?"location.hash=\'#services/"+s.page+"\'":"openSvc("+i+")";
     var head='<div class="svc spot'+(i===0?' tall':(last?' wide':''))+'" onclick="'+act+'" tabindex="0" role="button" aria-label="'+esc(s.title)+'" onkeydown="if(event.key===\'Enter\'){'+act+'}">';
     var ghost='<span class="ghost" aria-hidden="true">'+n+'</span>';
-    var ic='';
+    var ic='<span class="ic">'+svgW(s.icon,22)+'</span>';
+    var tags=(s.tags&&(i===0||last))?'<div class="svc-tags">'+s.tags.map(function(t){return '<span class="svc-tag">'+esc(t)+'</span>';}).join('')+'</div>':'';
     var more='<span class="more">Voir le détail '+svgW('<path d="M7 17L17 7M17 7H9M17 7v8"/>',14)+'</span>';
     if(last){
-      return head+ghost+'<div class="wide-head">'+ic+'<h3>'+esc(s.title)+'</h3></div><p>'+esc(s.teaser)+'</p>'+more+'</div>';
+      return head+ghost+'<div class="wide-head">'+ic+'<h3>'+esc(s.title)+'</h3></div><p>'+esc(s.teaser)+'</p>'+tags+more+'</div>';
     }
-    return head+ghost+ic+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.teaser)+'</p>'+more+'</div>';
+    return head+ghost+ic+'<h3>'+esc(s.title)+'</h3><p>'+esc(s.teaser)+'</p>'+tags+more+'</div>';
   }).join('');
 
   var CHECK='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>';

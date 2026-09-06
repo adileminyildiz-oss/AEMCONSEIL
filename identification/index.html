@@ -111,7 +111,7 @@
         <div><label for="f-siret">SIRET</label><input id="f-siret" inputmode="numeric" placeholder="000 000 000 00000"></div>
         <div><label for="f-rcs">RCS / RM + ville</label><input id="f-rcs" placeholder="RCS Paris 000 000 000"></div>
         <div><label for="f-tva">N° TVA intracom.</label><input id="f-tva" placeholder="FR00000000000"></div>
-        <div><label for="f-email">Email <span class="req">*</span></label><input id="f-email" type="email" autocomplete="email" placeholder="contact@exemple.fr"></div>
+        <div><label for="f-email">E-mail <span class="req">*</span></label><input id="f-email" type="email" autocomplete="email" placeholder="contact@exemple.fr"></div>
         <div><label for="f-tel">Téléphone <span style="color:var(--txt2);font-weight:400">(optionnel)</span></label><input id="f-tel" type="tel" autocomplete="tel" placeholder="06 00 00 00 00"></div>
         <div></div>
         <div class="full"><label for="f-iban">IBAN (pour le paiement) <span style="color:var(--txt2);font-weight:400">(optionnel)</span></label><input id="f-iban" autocomplete="off" placeholder="FR76 0000 0000 0000 0000 0000 000"></div>
@@ -130,7 +130,7 @@
         <div><label for="p-prenom">Prénom <span class="req">*</span></label><input id="p-prenom" autocomplete="given-name" placeholder="Jean"></div>
         <div><label for="p-nom">Nom <span class="req">*</span></label><input id="p-nom" autocomplete="family-name" placeholder="Dupont"></div>
         <div class="full"><label for="p-adresse">Adresse de facturation <span class="req">*</span></label><textarea id="p-adresse" autocomplete="street-address" placeholder="3 avenue de l'Exemple&#10;69000 Lyon"></textarea></div>
-        <div><label for="p-email">Email <span style="color:var(--txt2);font-weight:400">(optionnel)</span></label><input id="p-email" type="email" autocomplete="email" placeholder="client@exemple.fr"></div>
+        <div><label for="p-email">E-mail <span style="color:var(--txt2);font-weight:400">(optionnel)</span></label><input id="p-email" type="email" autocomplete="email" placeholder="client@exemple.fr"></div>
         <div><label for="p-tel">Téléphone <span style="color:var(--txt2);font-weight:400">(optionnel)</span></label><input id="p-tel" type="tel" autocomplete="tel" placeholder="06 00 00 00 00"></div>
         <div class="full"><label for="p-siret">SIRET <span style="color:var(--txt2);font-weight:400">(optionnel — auto-entrepreneur / micro-entreprise)</span></label>
           <div class="siren-row">
@@ -208,8 +208,10 @@
         put(q, 'tva', val('#f-tva'));
         put(q, 'email', val('#f-email'));
         put(q, 'tel', val('#f-tel'));
-        put(q, 'iban', val('#f-iban'));
-        put(q, 'bic', val('#f-bic'));
+        // IBAN / BIC volontairement EXCLUS de l'URL de redirection : des données
+        // bancaires ne doivent jamais transiter dans une chaîne de requête (historique,
+        // logs, en-tête Referer). Elles sont transmises au back-office via AEM.intake
+        // (POST) et re-saisies côté facturation.
       } else {
         put(q, 'prenom', val('#p-prenom'));
         put(q, 'nom', val('#p-nom'));

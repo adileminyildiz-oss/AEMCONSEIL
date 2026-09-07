@@ -276,7 +276,7 @@
   .overlay.open{opacity:1;visibility:visible}
 
   /* ===== Sections ===== */
-  section{padding:clamp(64px,9vw,110px) 0}
+  section{padding:clamp(56px,7.5vw,94px) 0}
   .wrap>section,.wrap>.cta-band{transform-origin:center center;transition:transform .55s cubic-bezier(.22,1,.36,1)}
   @media(prefers-reduced-motion:reduce){.wrap>section,.wrap>.cta-band{transform:none!important}}
   .sh{max-width:660px;margin:0 auto clamp(40px,5vw,56px);text-align:center}
@@ -558,7 +558,7 @@
 
   /* ===== Footer ===== */
   footer.ft{border-top:1px solid var(--line);padding:clamp(48px,6vw,72px) 0 36px;margin-top:20px}
-  .ft-top{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px}
+  .ft-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.1fr;gap:40px}
   .ft-top img{height:38px;filter:brightness(1.14) drop-shadow(0 0 10px rgba(43,69,255,.4))}
   .ft-top .desc{margin-top:18px;max-width:320px;font-size:14px;color:var(--txt2)}
   .ft-top h4{font-family:'Inter Tight';font-size:14px;font-weight:600;margin:0 0 15px}
@@ -1002,8 +1002,8 @@
   /* Outils gratuits (calculateurs) */
   .ot-wrap{max-width:760px;margin:0 auto}
   .ot-card{border:1px solid var(--line-2);border-radius:22px;overflow:hidden;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-  .ot-tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:1px solid var(--line);background:var(--glass)}
-  .ot-tab{flex:1 1 auto;min-width:82px;font-family:'Inter Tight';font-weight:600;font-size:13.5px;color:var(--txt2);cursor:pointer;padding:11px 10px;border-radius:12px;background:none;border:none;transition:background .16s,color .16s}
+  .ot-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;padding:8px;border-bottom:1px solid var(--line);background:var(--glass)}
+  .ot-tab{flex:0 1 auto;min-width:82px;font-family:'Inter Tight';font-weight:600;font-size:13.5px;color:var(--txt2);cursor:pointer;padding:11px 14px;border-radius:12px;background:none;border:none;transition:background .16s,color .16s}
   .ot-tab:hover{color:#fff}
   .ot-tab.on{color:#fff;background:linear-gradient(135deg,rgba(109,134,255,.24),rgba(43,69,255,.2));box-shadow:inset 0 0 0 1px var(--line-2)}
   .ot-panel{display:none;padding:24px}

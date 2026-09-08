@@ -146,6 +146,7 @@ function head({ title, desc, url, ogType, ld }) {
 <link rel="stylesheet" href="/assets/article.css">
 ${ld.map(o => '<script type="application/ld+json">' + JSON.stringify(o) + '</script>').join('\n')}
 <script src="/assets/analytics.js" defer></script>
+<script>window.AEM_CHAT_ENDPOINT='https://ammmyhtxnwyoopfxtans.supabase.co/functions/v1/assistant';</script>
 <script src="/assets/chat.js" defer></script>
 </head>
 <body>

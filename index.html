@@ -790,9 +790,37 @@
   .drawer .dlabel{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--azur);margin-top:8px;font-weight:600}
 
   /* ===== Page Service dédiée ===== */
-  #svcPage,#devisPage,#rdvPage,#compPage{position:fixed;inset:0;z-index:130;display:none;overflow-y:auto;overflow-x:hidden;
+  #svcPage,#devisPage,#rdvPage,#compPage,#diagPage{position:fixed;inset:0;z-index:130;display:none;overflow-y:auto;overflow-x:hidden;
     background:var(--dialog-grad)}
-  #svcPage.open,#devisPage.open,#rdvPage.open,#compPage.open{display:block}
+  #svcPage.open,#devisPage.open,#rdvPage.open,#compPage.open,#diagPage.open{display:block}
+  /* Diagnostic interactif */
+  .diag-step,.diag-res{max-width:640px;margin:0 auto}
+  .diag-prog{display:flex;gap:6px;margin:0 auto 26px;max-width:420px}
+  .diag-prog span{height:4px;flex:1;border-radius:3px;background:var(--line-2);transition:background .3s}
+  .diag-prog span.on{background:linear-gradient(90deg,var(--outremer),var(--iris))}
+  .diag-q{font-family:'Inter Tight';font-weight:600;font-size:clamp(23px,3.4vw,33px);letter-spacing:-.02em;text-align:center;margin-bottom:6px;text-wrap:balance}
+  .diag-sub{text-align:center;color:var(--txt2);margin-bottom:26px}
+  .diag-opts{display:grid;gap:12px}
+  .diag-opt{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:17px 20px;border-radius:16px;border:1px solid var(--line-2);background:var(--glass);color:var(--txt);font-family:inherit;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}
+  .diag-opt:hover{border-color:var(--azur);background:var(--glass-2);transform:translateY(-2px)}
+  .diag-opt .di{width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,rgba(58,61,255,.3),rgba(124,58,255,.16));border:1px solid var(--line-2);color:var(--peri)}
+  .diag-opt b{font-family:'Inter Tight';font-weight:600;font-size:16px;display:block}
+  .diag-opt em{font-style:normal;color:var(--txt2);font-size:13.5px}
+  .diag-nav{display:flex;justify-content:center;margin-top:22px}
+  .diag-back{background:none;border:none;color:var(--txt2);cursor:pointer;font-size:14px;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+  .diag-back:hover{color:#fff}
+  .diag-res-card{border:1px solid rgba(109,134,255,.4);border-radius:22px;padding:clamp(24px,4vw,36px);background:linear-gradient(160deg,rgba(43,69,255,.14),rgba(43,69,255,.03));box-shadow:0 30px 70px rgba(0,0,0,.4),0 0 50px rgba(43,69,255,.16)}
+  .diag-res-card h3{font-family:'Inter Tight';font-weight:700;font-size:clamp(23px,3.2vw,30px);letter-spacing:-.02em;margin:6px 0 4px;text-wrap:balance}
+  .diag-price{color:var(--peri);font-weight:600;font-size:16px}
+  .diag-res-card .msg{color:var(--txt2);margin-top:12px}
+  .diag-res-card ul{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-direction:column;gap:12px}
+  .diag-res-card li{display:flex;gap:12px;color:var(--read);font-size:15px}
+  .diag-res-card li svg{color:var(--pos);flex:none;margin-top:2px}
+  .diag-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+  .diag-cta{max-width:1120px;margin:26px auto 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;padding:22px 26px;border:1px solid rgba(109,134,255,.35);border-radius:18px;background:linear-gradient(120deg,rgba(58,61,255,.12),rgba(124,58,255,.06))}
+  .diag-cta b{font-family:'Inter Tight';font-weight:600;font-size:17px;display:block}
+  .diag-cta span{color:var(--txt2);font-size:14px}
+  .diag-cta .btn{flex:none}
   /* Comparateur de statuts */
   .cmp-filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:26px}
   .cmp-filt{font-family:'Inter Tight';font-weight:600;font-size:14px;color:var(--txt2);cursor:pointer;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--glass);transition:all .16s}
@@ -1535,6 +1563,7 @@
           <a href="#rdv" class="btn btn-pri">Réserver un appel</a>
         </div>
       </div>
+      <div class="diag-cta reveal"><div><b>Pas sûr de la formule adaptée&nbsp;?</b><span>Répondez à trois questions — on vous recommande la bonne offre en une minute.</span></div><a href="#diagnostic" class="btn btn-pri" onclick="spGo(event,'#diagnostic')">Faire le diagnostic <span aria-hidden="true">→</span></a></div>
       <p class="pricing-note">Tarifs indicatifs, ajustés selon le volume et vos besoins réels. Le premier rendez-vous est offert et sans engagement.</p>
     </section>
 
@@ -2175,6 +2204,15 @@
     <div class="cmp-scroll"><table class="cmp-table"><thead id="cmpHead"></thead><tbody id="cmpBody"></tbody></table></div>
     <p class="cmp-note">Informations générales à caractère structurel, à titre indicatif — elles ne constituent pas un conseil personnalisé. Le choix d'un statut engage votre fiscalité, votre protection sociale et votre responsabilité.</p>
     <div class="sp-final cmp-cta"><h2>Un doute sur le bon statut&nbsp;?</h2><p>Le premier rendez-vous est offert. On analyse votre projet et on vous oriente vers la forme la plus avantageuse.</p><div class="cta-actions"><a href="#rdv" class="btn btn-pri" onclick="spGo(event,'#rdv')">Prendre rendez-vous <span aria-hidden="true">→</span></a><a href="#devis" class="btn btn-ghost" onclick="spGo(event,'#devis')">Demander un devis</a></div></div>
+  </div>
+</div>
+
+<!-- Diagnostic interactif -->
+<div id="diagPage" role="dialog" aria-modal="true" aria-label="Diagnostic — quel accompagnement pour vous">
+  <div class="sp-bar"><div class="sp-brand"><button type="button" class="sp-back" onclick="spBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> Retour au site</button></div><img src="assets/logo-full.png" alt="AEM-CONSEIL" width="1792" height="664" decoding="async" role="button" tabindex="0" aria-label="Retour à l'accueil" onclick="location.hash='#top'" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.hash='#top'}"><a href="#rdv" class="btn btn-pri" onclick="spGo(event,'#rdv')">Être conseillé</a></div>
+  <div class="sp-wrap">
+    <div class="sh"><span class="kick">Diagnostic</span><h2>Quel <span class="ital">accompagnement</span> pour vous&nbsp;?</h2><p>Répondez à trois questions&nbsp;: on vous recommande la formule la mieux adaptée à votre situation, puis on affine ensemble lors du premier rendez-vous offert.</p></div>
+    <div id="diagBody"></div>
   </div>
 </div>
 
@@ -2912,8 +2950,86 @@ function spOpenComp(){
   if(typeof T==='function')T('tool_open',{tool:'comparateur'});
   if(window.compInit)window.compInit();
 }
+function spCloseDiag(){var d=document.getElementById('diagPage'); if(d)d.classList.remove('open');}
+function spOpenDiag(){
+  spCloseSvc();
+  var d=document.getElementById('diagPage'); if(!d)return;
+  d.classList.add('open'); d.scrollTop=0;
+  document.body.classList.add('page-open'); document.title='Diagnostic — quel accompagnement ? — AEM-CONSEIL';
+  var url='https://aemconseil.eu/#diagnostic';
+  seoApply('Diagnostic — AEM-CONSEIL','En trois questions, découvrez l’accompagnement comptable adapté à votre situation et recevez une recommandation personnalisée.',url,url);
+  if(typeof T==='function')T('tool_open',{tool:'diagnostic'});
+  if(window.diagInit)window.diagInit();
+}
+/* ---- Diagnostic interactif : machine à états ---- */
+var DIAG_Q=[
+  {key:'stage',q:'Où en êtes-vous&nbsp;?',sub:'Pour adapter l’accompagnement à votre situation.',opts:[
+    {v:'creation',t:'Je crée mon entreprise',d:'Projet en cours de lancement',ic:'<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 2v6M9 5l3-3 3 3"/>'},
+    {v:'active',t:'J’ai déjà une activité',d:'Entreprise en fonctionnement',ic:'<path d="M3 21h18M5 21V8l7-4 7 4v13M10 21v-5h4v5"/>'},
+    {v:'switch',t:'Je change de comptable',d:'Reprise de votre dossier',ic:'<path d="M20 11a8 8 0 0 0-14-4M4 5v4h4M4 13a8 8 0 0 0 14 4M20 19v-4h-4"/>'}
+  ]},
+  {key:'structure',q:'Quelle est votre structure&nbsp;?',sub:'',opts:[
+    {v:'micro',t:'Micro-entreprise',d:'Auto-entrepreneur',ic:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>'},
+    {v:'societe',t:'Société',d:'SASU, SARL, SAS, EURL…',ic:'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>'},
+    {v:'undecided',t:'Pas encore décidé',d:'J’hésite sur le statut',ic:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.4 2.4 0 1 1 3 2.3c-.8.3-1 .8-1 1.6M12 17h.01"/>'}
+  ]},
+  {key:'need',q:'Votre besoin principal&nbsp;?',sub:'',opts:[
+    {v:'compliance',t:'Être en règle',d:'Comptabilité & déclarations',ic:'<path d="M20 6 9 17l-5-5"/>'},
+    {v:'payroll',t:'Gérer la paie',d:'Bulletins & salariés (DSN)',ic:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M7 15h5"/>'},
+    {v:'advisory',t:'Piloter & développer',d:'Tableaux de bord, conseil',ic:'<path d="M3 17l6-6 4 4 8-8M21 7v5M21 7h-5"/>'},
+    {v:'setup',t:'Créer / choisir mon statut',d:'Formalités & lancement',ic:'<path d="M9 12a12 12 0 0 1 8-9c1 4-1 8-4 10l-1 4-3-3zM5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2"/>'}
+  ]}
+];
+var diagState={step:0,ans:{}};
+function diagRecommend(a){
+  if(a.need==='setup'||a.stage==='creation'||a.structure==='undecided'){
+    return {title:'Accompagnement à la création',price:a.structure==='micro'?'puis suivi micro à partir de 140 €/mois HT':'puis suivi société à partir de 250 €/mois HT',
+      items:['Choix du statut juridique adapté','Rédaction des statuts & formalités','Business plan & prévisionnel','Mise en route de votre comptabilité'],
+      msg:'On vous accompagne de l’idée à l’immatriculation, puis on installe le suivi comptable adapté à votre activité.'};
+  }
+  if(a.structure==='micro'){
+    return {title:'Formule Micro-entreprise',price:'à partir de 140 €/mois HT',
+      items:['Déclarations (URSSAF, TVA si concerné)','Suivi de vos seuils','Rappels de vos échéances','Accompagnement par e-mail'],
+      msg:'Idéal pour rester serein sur vos obligations, sans y passer de temps.'};
+  }
+  if(a.need==='payroll'){
+    return {title:'Formule complète — Comptable, Social & Administratif',price:'à partir de 450 €/mois HT',
+      items:['Tenue comptable & bilan annuel','Paie & déclarations sociales (DSN)','Fiscalité & TVA','Gestion administrative'],
+      msg:'Tout est géré — comptabilité, paie et administratif — vous vous concentrez sur votre métier.'};
+  }
+  if(a.need==='advisory'){
+    return {title:'Société — Tenue + Conseil & pilotage',price:'à partir de 250 €/mois HT',
+      items:['Tenue comptable & bilan','Tableaux de bord & prévisionnels','Analyse de rentabilité et de marges','Rendez-vous de pilotage réguliers'],
+      msg:'On tient vos comptes avec rigueur et on vous aide à décider au bon moment.'};
+  }
+  return {title:'Formule Société — Tenue comptable',price:'à partir de 250 €/mois HT',
+    items:['Tenue comptable complète','Déclarations fiscales & TVA','Bilan & comptes annuels','Interlocuteur dédié'],
+    msg:'Votre comptabilité tenue avec rigueur, des comptes clairs et conformes, pour piloter en toute sérénité.'};
+}
+function diagRender(){
+  var b=document.getElementById('diagBody'); if(!b)return;
+  var n=DIAG_Q.length;
+  if(diagState.step<n){
+    var Q=DIAG_Q[diagState.step],i,prog='';
+    for(i=0;i<n;i++){prog+='<span class="'+(i<=diagState.step?'on':'')+'"></span>';}
+    var opts=Q.opts.map(function(o){
+      return '<button type="button" class="diag-opt" onclick="diagPick(\''+o.v+'\')"><span class="di"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+o.ic+'</svg></span><span><b>'+o.t+'</b>'+(o.d?'<em>'+o.d+'</em>':'')+'</span></button>';
+    }).join('');
+    var back=diagState.step>0?'<div class="diag-nav"><button type="button" class="diag-back" onclick="diagBack()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> Précédent</button></div>':'';
+    b.innerHTML='<div class="diag-step"><div class="diag-prog">'+prog+'</div><div class="diag-q">'+Q.q+'</div>'+(Q.sub?'<p class="diag-sub">'+Q.sub+'</p>':'<div style="height:10px"></div>')+'<div class="diag-opts">'+opts+'</div>'+back+'</div>';
+  }else{
+    var r=diagRecommend(diagState.ans);
+    if(typeof T==='function')T('diag_complete',diagState.ans);
+    var items=r.items.map(function(it){return '<li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>'+it+'</li>';}).join('');
+    b.innerHTML='<div class="diag-res"><div class="diag-res-card"><span class="kick">Notre recommandation</span><h3>'+r.title+'</h3><div class="diag-price">'+r.price+'</div><p class="msg">'+r.msg+'</p><ul>'+items+'</ul><div class="diag-actions"><a href="#rdv" class="btn btn-pri" onclick="spGo(event,\'#rdv\')">Réserver mon rendez-vous offert <span aria-hidden="true">→</span></a><a href="#devis" class="btn btn-ghost" onclick="spGo(event,\'#devis\')">Demander un devis</a></div></div><div class="diag-nav" style="margin-top:18px"><button type="button" class="diag-back" onclick="diagReset()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg> Recommencer</button></div><p class="cmp-note" style="text-align:center;margin-top:20px">Recommandation indicative basée sur vos réponses — le premier rendez-vous permet de l’affiner et de vous remettre un devis précis.</p></div>';
+  }
+}
+function diagPick(v){ diagState.ans[DIAG_Q[diagState.step].key]=v; diagState.step++; diagRender(); var d=document.getElementById('diagPage'); if(d)d.scrollTop=0; }
+function diagBack(){ if(diagState.step>0){diagState.step--; diagRender();} }
+function diagReset(){ diagState={step:0,ans:{}}; diagRender(); }
+window.diagInit=function(){ diagState={step:0,ans:{}}; diagRender(); };
 function spClose(){
-  spCloseSvc(); spCloseDevis(); spCloseRdv(); spCloseComp();
+  spCloseSvc(); spCloseDevis(); spCloseRdv(); spCloseComp(); spCloseDiag();
   document.body.classList.remove('page-open'); document.title=SP_BASE_TITLE;
   seoReset();
 }
@@ -2922,6 +3038,7 @@ function spRoute(){
   if(h==='#devis'){ spOpenDevis(); return; }
   if(h==='#rdv'){ spOpenRdv(); return; }
   if(h==='#comparateur'){ spOpenComp(); return; }
+  if(h==='#diagnostic'){ spOpenDiag(); return; }
   var m=h.match(/^#(services|ressources|theme)\/([a-z0-9-]+)$/);
   if(m){ if(m[1]==='services'){spOpenService(m[2]);} else if(m[1]==='theme'){spOpenTheme(m[2]);} else {spOpenGuide(m[2]);} return; }
   spClose();

@@ -23,6 +23,11 @@ const ts = html.indexOf('var THEMES=['); const te = html.indexOf('\n];', ts);
 const THEMES = eval('(' + html.slice(ts + 'var THEMES='.length, te + 2) + ')');
 const THEME_BY_NAME = {}; THEMES.forEach(t => THEME_BY_NAME[t.name] = t);
 
+/* --- Parse SERVICE_PAGES (littéral JS avec réfs IC → stub) --- */
+const ssIdx = html.indexOf('var SERVICE_PAGES=['); const seIdx = html.indexOf('\n];', ssIdx);
+const IC = new Proxy({}, { get: () => '' });
+const SERVICE_PAGES = eval('(' + html.slice(ssIdx + 'var SERVICE_PAGES='.length, seIdx + 2) + ')');
+
 /* --- Parse ARTICLE_SECTIONS (JSON) --- */
 const as = artjs.indexOf('window.ARTICLE_SECTIONS='); const ae = artjs.lastIndexOf('};');
 const SECTIONS = JSON.parse(artjs.slice(as + 'window.ARTICLE_SECTIONS='.length, ae + 1));
@@ -155,7 +160,7 @@ ${ld.map(o => '<script type="application/ld+json">' + JSON.stringify(o) + '</scr
 }
 
 function footer() {
-  return `<footer class="sf"><div class="fl"><a href="/">Accueil</a><a href="/ressources/">Tous les articles</a><a href="/#outils">Outils gratuits</a><a href="/#contact">Contact</a></div><div>© AEM-CONSEIL — Cabinet de conseil &amp; expertise comptable. Informations générales à titre indicatif, ne constituant pas un conseil personnalisé.</div></footer>
+  return `<footer class="sf"><div class="fl">${SERVICE_PAGES.map(s => `<a href="/services/${s.slug}/">${esc(s.title)}</a>`).join('')}</div><div class="fl"><a href="/">Accueil</a><a href="/ressources/">Tous les articles</a><a href="/#outils">Outils gratuits</a><a href="/#contact">Contact</a></div><div>© AEM-CONSEIL — Cabinet de conseil &amp; expertise comptable. Informations générales à titre indicatif, ne constituant pas un conseil personnalisé.</div></footer>
 <script>(function(){if(!('PerformanceObserver' in window))return;var sent={},lcp=0,cls=0,inp=0;function send(n,v){if(sent[n])return;sent[n]=1;try{if(window.aemTrack)window.aemTrack('web_vitals',{metric:n,value:Math.round(v)});}catch(e){}}function obs(t,cb,o){try{new PerformanceObserver(cb).observe(Object.assign({type:t,buffered:true},o||{}));}catch(e){}}obs('largest-contentful-paint',function(l){var e=l.getEntries();lcp=e[e.length-1].startTime;});obs('layout-shift',function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)cls+=e.value;});});obs('event',function(l){l.getEntries().forEach(function(e){if(e.duration>inp)inp=e.duration;});},{durationThreshold:40});document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'){send('LCP',lcp);send('CLS',cls*1000);send('INP',inp);}});})();</script>
 <script>document.addEventListener('click',function(e){var b=e.target.closest('.gs-copy');if(!b)return;var u=b.getAttribute('data-url');var s=b.querySelector('span');var done=function(){if(s){var o=s.textContent;s.textContent='Lien copié \\u2713';b.classList.add('ok');setTimeout(function(){s.textContent=o;b.classList.remove('ok');},1800);}};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done).catch(function(){window.prompt('Copiez le lien :',u);});}else{window.prompt('Copiez le lien :',u);}});</script>
 </body>
@@ -258,6 +263,43 @@ for (const t of THEMES) {
   write(`/theme/${t.slug}/index.html`, page);
 }
 
+/* --- Pages services (offres commerciales indexables — fort enjeu SEO) --- */
+let nServices = 0;
+for (const s of SERVICE_PAGES) {
+  const url = `${SITE}/services/${s.slug}/`;
+  const theme = THEME_BY_NAME[s.cat];
+  const relArts = GUIDES.filter(g => g.cat === s.cat).slice(0, 6);
+  const includes = (s.includes || []).map(x => `<li>${CHK}<span>${esc(x)}</span></li>`).join('');
+  const process = (s.process || []).map((p, i) => `<p><strong>${('0' + (i + 1)).slice(-2)} · ${esc(p.t)} —</strong> ${esc(p.d)}</p>`).join('');
+  const audience = (s.audience || []).map(a => `<span style="display:inline-block;border:1px solid rgba(160,140,255,.25);border-radius:999px;padding:5px 12px;margin:0 6px 9px 0;font-size:14px">${esc(a)}</span>`).join('');
+  const faqItems = s.faq || [];
+  const faqHtml = faqItems.length ? `<div class="gd-sec"><h2>Questions fréquentes</h2>` + faqItems.map(f => `<div style="margin-top:14px"><h3 style="font-size:17px">${esc(f.q)}</h3><p>${esc(f.a)}</p></div>`).join('') + `</div>` : '';
+  const crumb = `<nav class="crumb" aria-label="Fil d'Ariane"><a href="/">Accueil</a> › <span>${esc(s.title)}</span></nav>`;
+  const ld = [
+    { "@context": "https://schema.org", "@type": "Service", "serviceType": s.title, "name": `${s.title} — AEM-CONSEIL`, "description": s.lead, "provider": { "@type": "AccountingService", "name": "AEM-CONSEIL", "url": SITE + "/" }, "areaServed": { "@type": "Country", "name": "France" }, "url": url },
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Accueil", "item": SITE + "/" },
+      { "@type": "ListItem", "position": 2, "name": s.title, "item": url }
+    ] }
+  ];
+  if (faqItems.length) ld.push({ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faqItems.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })) });
+  const related = relArts.length ? `<div class="gd-related"><h2>Ressources — ${esc(s.cat)}</h2><div class="blog-grid">${relArts.map(card).join('')}</div>${theme ? `<p style="margin-top:18px"><a href="/theme/${theme.slug}/">Voir tous les articles ${esc(s.cat)} ${ARR}</a></p>` : ''}</div>` : '';
+  const page = head({ title: `${s.title} — AEM-CONSEIL`, desc: s.lead, url, ogType: 'website', ld }) +
+    `<main id="content" class="sp-wrap gd-wrap">` +
+    `<div class="sp-hero">${crumb}<span class="sp-kick">${esc(s.cat)} · Expertise</span><h1>${esc(s.title)}</h1><p>${esc(s.lead)}</p><div class="cta-actions"><a href="/#devis" class="btn btn-pri">Demander un devis ${ARR}</a><a href="/#rdv" class="btn btn-ghost">Prendre rendez-vous</a></div></div>` +
+    `<article class="gd-body">` +
+    `<div class="gd-sec"><h2>Ce que comprend la mission</h2><ul class="gd-list">${includes}</ul></div>` +
+    (process ? `<div class="gd-sec"><h2>Comment ça se passe</h2>${process}</div>` : '') +
+    (audience ? `<div class="gd-sec"><h2>Pour qui&nbsp;?</h2><div style="margin-top:10px">${audience}</div></div>` : '') +
+    faqHtml +
+    `</article>` +
+    related +
+    cta('cette prestation') +
+    `</main>` + footer();
+  write(`/services/${s.slug}/index.html`, page);
+  nServices++;
+}
+
 /* --- Index de tous les articles --- */
 {
   const url = `${SITE}/ressources/`;
@@ -292,6 +334,7 @@ const urls = [
   { loc: SITE + '/ressources/', p: '0.9', f: 'weekly' },
   { loc: SITE + '/espace/', p: '0.5', f: 'monthly' },
   { loc: SITE + '/facturation/', p: '0.5', f: 'monthly' },
+  ...SERVICE_PAGES.map(s => ({ loc: `${SITE}/services/${s.slug}/`, p: '0.9', f: 'monthly' })),
   ...THEMES.map(t => ({ loc: `${SITE}/theme/${t.slug}/`, p: '0.7', f: 'monthly' })),
   ...GUIDES.map(g => ({ loc: `${SITE}/ressources/${g.slug}/`, p: '0.8', f: 'monthly' }))
 ];
@@ -300,4 +343,4 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://w
   `\n</urlset>\n`;
 writeFileSync(ROOT + '/sitemap.xml', sitemap);
 
-console.log(`Généré : ${nArticles} articles + ${THEMES.length} thèmes + 1 index + chat-index.json + sitemap (${urls.length} URL).`);
+console.log(`Généré : ${nArticles} articles + ${nServices} services + ${THEMES.length} thèmes + 1 index + chat-index.json + sitemap (${urls.length} URL).`);
